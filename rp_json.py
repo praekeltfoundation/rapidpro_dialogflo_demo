@@ -37,6 +37,8 @@ class RP_JSON:
             else:
                 self.intent = 'smalltalk' 
                 self.fulfillment_text = self.query_result.fulfillment_text
+                print("*" * 20)
+                print(self.fulfillment_text)
 
         # Is this a Default Fall back ?
         elif (df_intent == "Default Fallback Intent"):

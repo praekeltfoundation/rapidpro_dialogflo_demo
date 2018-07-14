@@ -39,8 +39,8 @@ def handle_unknown_response():
 
     print(rp_response)
 
-    return make_response(jsonify({'text': rp_json}))#, 'intent': rp_json.intent, 
-                                  #'confidence': intent_confidence, 'parameters': parameters}))
+    return make_response(jsonify({'intent': rp_response.intent, 
+                                  'fulfillment': rp_response.fulfillment_text}))
 
 if __name__ == "__main__":
     app.run(debug=True, port=8080)
