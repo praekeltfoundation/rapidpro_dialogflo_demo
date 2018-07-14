@@ -8,7 +8,8 @@ app = Flask(__name__)
 
 def get_df_response(message):
   #  agent_id = 'littlesis-a5948'
-    agent_id = 'littlesisv2'
+  #  agent_id = 'littlesisv2'
+    agent_id = 'littlesisv3'
     df_response = detect_intent_texts(agent_id, str(uuid.uuid4()),
                   [message], 'en-US')
     return df_response
@@ -22,21 +23,28 @@ def handle_unknown_response():
         @return: either a SmallTalk Response or intent is returned."""
 
     # Get unexpected user input
-    
     unexpected_input = request.args.get('unknown_response')
-    print("User input: " + unexpected_input)
 
     # TODO Handle an empty input in RapidPro
     if unexpected_input is None:
         print("user input is empty")
         return "user input is empty"
+    
+    print("User input: " + unexpected_input)
+
 
     # Pass unexpectd_input to Dialogflow 
-    df_response = get_df_response(unexpected_input)
-    print(df_response)
+    df_json = get_df_response(unexpected_input)
+    print(df_json)
+
+    rp_json = rapidpro_response.rp_response(df_json)
+
+    rp_json = rp_json.query_result.action
     
-#    return make_response(jsonify({'text': fulfillment_text, 'intent': intent, 
-                      #            'confidence': intent_confidence, 'parameters': parameters}))
+    print(rp_json)
+
+    return make_response(jsonify({'text': rp_json}))#, 'intent': rp_json.intent, 
+                                  #'confidence': intent_confidence, 'parameters': parameters}))
 
 if __name__ == "__main__":
     app.run(debug=True, port=8080)
