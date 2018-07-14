@@ -1,8 +1,7 @@
 import uuid
 from flask import Flask, request, make_response, jsonify
 from flo_detect_intent import detect_intent_texts
-import dialogflow
-import rapidpro_response
+import rp_json
 
 app = Flask(__name__)
 
@@ -32,16 +31,13 @@ def handle_unknown_response():
     
     print("User input: " + unexpected_input)
 
-
     # Pass unexpectd_input to Dialogflow 
-    df_json = get_df_response(unexpected_input)
-    print(df_json)
+    df_response = get_df_response(unexpected_input)
+    print(df_response)
 
-    rp_json = rapidpro_response.rp_response(df_json)
+    rp_response = rp_json.RP_JSON(df_response)
 
-    rp_json = rp_json.query_result.action
-    
-    print(rp_json)
+    print(rp_response)
 
     return make_response(jsonify({'text': rp_json}))#, 'intent': rp_json.intent, 
                                   #'confidence': intent_confidence, 'parameters': parameters}))

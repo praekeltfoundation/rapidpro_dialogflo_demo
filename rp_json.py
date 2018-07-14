@@ -2,34 +2,33 @@ import dialogflow
 from flo_detect_intent import detect_intent_texts
 
 
-class rp_response:
+class RP_JSON:
     """A JSON object detailing how RapidPro should respond"""
 
     def __init__(self, df_response):
         """Initialise a new NLU_response with correct fields"""
 
-        # TODO handle empty df_response
+        # TODO handle empty df_response - handle on response_handler side
         
         # Initalize the object
         self.query_result = df_response.query_result
-        self.parameters = ""
-        self.fulfillment_text = ""
+        self.parameters = "No Parameters"
+        self.fulfillment_text = "No Fulfillment Text"
 
         self.set_intent()
 
-        print(self.intent)
-        print(self.parameters)
-        print(self.fulfillment_text)
+        print("intent: " + self.intent)
+        print("params: " + self.parameters)
+        print("fulfillment: " + self.fulfillment_text)
 
     def set_intent(self):
-
-        intent = self.query_result.intent.display_name
-        action = self.query_result.action
-
+        df_intent = self.query_result.intent.display_name
+        df_action = self.query_result.action
         
-        # Is this Small Talk?
-        if (intent.startswith("smalltalk")):
-            intents = intent.split(".")
+        # Is this Small Talk
+        if (df_action.startswith("smalltalk")):
+            intents = df_action.split(".")
+            # Is this a confirmation? 
             if (intents[1] == 'confirmation'):
                 if (intents[2] == 'yes'):
                     self.intent = 'yes'
@@ -37,24 +36,24 @@ class rp_response:
                     self.intent = 'no'
             else:
                 self.intent = 'smalltalk' 
-                self.parameters = ""
+                self.fulfillment_text = self.query_result.fulfillment_text
+
         # Is this a Default Fall back ?
-        elif (intent == "Default Fallback Intent"):
+        elif (df_intent == "Default Fallback Intent"):
             self.intent = 'unidentified_intent'
-            self.parameters = ""
+
         # This is an agent defined intent
         else:
-            self.intent = intent
-            self.set_parameters(intent)
+            self.intent = df_intent
+            self.set_parameters()
 
-    def set_parameters(self, intent):
-
+    def set_parameters(self):
         # Handle the case where the intent is to talk
         # about STDs.
-        if intent == 'STD':
+        if (self.intent == 'STD'):
             names = self.query_result.parameters['std_id']
             params = []
             for name in names:
                 params.append(name)
-
-            self.params = params
+                
+        self.params = params
