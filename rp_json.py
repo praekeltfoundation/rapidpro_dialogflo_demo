@@ -1,5 +1,5 @@
-import dialogflow
-from flo_detect_intent import detect_intent_texts
+import app.gsheets_reader.gsheets_reader as gsheets_reader
+from flo_detect_intent import detect_intent_texts 
 
 
 class RP_JSON:
@@ -43,6 +43,7 @@ class RP_JSON:
         # Is this a Default Fall back ?
         elif (df_intent == "Default Fallback Intent"):
             self.intent = 'unidentified_intent'
+            self.fulfillment_text = "I'm sorry, I'm just a bot. I'm not so good with type."
 
         # This is an agent defined intent
         else:
@@ -52,10 +53,18 @@ class RP_JSON:
     def set_parameters(self):
         # Handle the case where the intent is to talk
         # about STDs.
+        intents = self.intent.split(".")
+        # Handle definition case
+        if (intents[2] == "define"):
+            self.parameters = self.query_result.parameters['term']
+            print("Silly pepe " + str(self.parameters))
+            self.fulfillment_text = gsheets_reader.get_definition(str(self.parameters))
+
         if (self.intent == 'STD'):
             names = self.query_result.parameters['std_id']
             params = []
             for name in names:
                 params.append(name)
-                
-        self.params = params
+            self.parameters = params
+
+
