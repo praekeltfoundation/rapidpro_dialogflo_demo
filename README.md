@@ -21,27 +21,35 @@ The following software should be installed before attempting installation:
 
 ### Credentials
 We need access to two sets of credentials to make this application work nice and smoothly:
-1) Service account file to access the Dialogflow API
-2) Service account file to access the Google Sheets / Google Drive API
 
-Firstly, we will acquire the service account file for the Dialogflow API. First, open your newly created Agent in the [Dialogflow Console](https://console.dialogflow.com) and take a note of the Google Project ID. In our case, that value is `littlesisv3`.
+1) Firstly, we will acquire the service account file for the Dialogflow API. First, open your newly created Agent in the [Dialogflow Console](https://console.dialogflow.com) and take a note of the Google Project ID. In our case, that value is `littlesisv3`.
 
 ![](https://i.imgur.com/KGfPUQy.png)
 
-Then, head over to the [Google Cloud Platform Console](https://console.cloud.google.com/) and select the Google Cloud Project that corresponds to your Agent's Project ID.
+2) Then, head over to the [Google Cloud Platform Console](https://console.cloud.google.com/) and select the Google Cloud Project that corresponds to your Agent's Project ID.
 
 ![](https://i.imgur.com/Ha1TIMh.png)
 
-Now, select _Credentials_ under the _APIs & Services_ tab.
+3) Now, select _Credentials_ under the _APIs & Services_ tab.
 
 ![](https://i.imgur.com/K3dRHbh.png)
 
-Select _Create credentials_ followed by _Service account key_.
+4) Select _Create credentials_ followed by _Service account key_.
 ![](https://i.imgur.com/diEJfib.png)
 
-Select _Dialogflow Integrations_ as the service account (this is automatically created for us by Dialogflow when we create a new Agent). Leave the file format as JSON and download the file. Move this into the root directory of the repository, renamed to `dialogflow_key.json`.
+5) Select _Dialogflow Integrations_ as the service account (this is automatically created for us by Dialogflow when we create a new Agent). Leave the file format as JSON and download the file. Move this into the root directory of the repository, renamed to `dialogflow_key.json`.
 
 ![](https://i.imgur.com/GYtp0YE.png)
+
+6) Lastly, we need to obtain the key for interacting with the Google Sheets / Google Drive API. Return to the _Create service account key_ page that we saw in Step 5). Select the option to create a new service account, and give it a name. In the role field, selecting _Project > Owner_ will simplify the amount of admin you need to do right now.
+Take note of _Service account ID_ field (in our case, `gsheets@littlesisc3.iam...`). Download the file and move it into the root directory of the repository, renamed to `gsheets_key.json`.
+
+![](https://i.imgur.com/U9FfKOR.png)
+
+7) Create a copy of (this)[https://docs.google.com/spreadsheets/d/1Lnce9JQM_bBPX_7f_iKLek-EsyWiKGd1EN6wvNw3k04/edit#gid=0] Google Sheet to your personal Google Drive. Open this and rename it to `LittleSis_Spreadsheet`. Share the Google Sheet with the _Service account ID_ you took note of in Step 6.
+
+![](https://i.imgur.com/10mn0Am.png)
+
 ## Installation
 Start by cloning the repository and installing the dependencies.
 
