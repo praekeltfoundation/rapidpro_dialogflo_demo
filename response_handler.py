@@ -5,9 +5,9 @@ import rp_json
 
 app = Flask(__name__)
 
+
 def get_df_response(message):
-  #  agent_id = 'littlesis-a5948'
-  #  agent_id = 'littlesisv2'
+    """ Connect to the Dialogflow agent and get the agent's response """
     agent_id = 'littlesisv3'
     df_response = detect_intent_texts(agent_id, str(uuid.uuid4()),
                   [message], 'en-US')
@@ -40,7 +40,9 @@ def handle_unknown_response():
     print(rp_response)
 
     return make_response(jsonify({'intent': rp_response.intent, 
-                                  'fulfillment': rp_response.fulfillment_text}))
+                                  'fulfillment': rp_response.fulfillment_text,
+                                  'parameters': rp_response.parameters,
+                                  'user_query': rp_response.query_text}))
 
 if __name__ == "__main__":
     app.run(debug=True, port=8080)

@@ -1,39 +1,41 @@
 import app.gsheets_reader.gsheets_reader as gsheets_reader
-from flo_detect_intent import detect_intent_texts 
 
 
 class RP_JSON:
-    """A JSON object detailing how RapidPro should respond"""
+    """A JSON object detailing the JSON object to be sent
+       back to RapidPro.
+
+       RP_JSON {
+           "query_result": the query result object returned by Dialogflow
+           "query_text": the user query text 
+           "intent": the expression upon which to split the RapidPro flow 
+           "parameters": the infomration given by a user (if relevant)
+           "fulfillment_text": the fulfuillment text from the Dialogflow agent"""
 
     def __init__(self, df_response):
-        """Initialise a new NLU_response with correct fields"""
+        """Initialise a new RP_JSON object"""
 
-        # TODO handle empty df_response - handle on response_handler side
-        
         # Initalize the object
         self.query_result = df_response.query_result
+        self.query_text = df_response.query_result.query_text
         self.parameters = "No Parameters"
         self.fulfillment_text = "No Fulfillment Text"
-
         self.set_intent()
-
-        print("intent: " + self.intent)
-        print("params: " + self.parameters)
-        print("fulfillment: " + self.fulfillment_text)
 
     def set_intent(self):
         df_intent = self.query_result.intent.display_name
         df_action = self.query_result.action
         
-        # Is this Small Talk
+        # Is this Small Talk?
         if (df_action.startswith("smalltalk")):
             intents = df_action.split(".")
             # Is this a confirmation? 
             if (intents[1] == 'confirmation'):
-                if (intents[2] == 'yes'):
+                if (intents[2] == 'yes') or (intents[2] == 'ready'):
                     self.intent = 'yes'
                 else:
                     self.intent = 'no'
+            # Otherwise
             else:
                 self.intent = 'smalltalk' 
                 self.fulfillment_text = self.query_result.fulfillment_text
@@ -41,30 +43,30 @@ class RP_JSON:
                 print(self.fulfillment_text)
 
         # Is this a Default Fall back ?
-        elif (df_intent == "Default Fallback Intent"):
-            self.intent = 'unidentified_intent'
-            self.fulfillment_text = "I'm sorry, I'm just a bot. I'm not so good with type."
+        elif (df_intent == "agent.default.fallback"):
+            self.intent = "unidentified_intent"
+            self.fulfillment_text = self.query_result.fulfillment_text
+        
+        # Is this a Default Welcome Intent ?
+        elif (df_intent == "agent.default.welcome") or (df_intent == "Default Welcome Intent"):
+            self.intent = "welcome_intent"
+            self.fulfillment_text = self.query_result.fulfillment_text 
 
-        # This is an agent defined intent
+        # This is an Agent Defined intent
         else:
             self.intent = df_intent
             self.set_parameters()
 
     def set_parameters(self):
-        # Handle the case where the intent is to talk
-        # about STDs.
         intents = self.intent.split(".")
-        # Handle definition case
+        # Handle case: Definition
         if (intents[2] == "define"):
+            self.intent = "Definition"
             self.parameters = self.query_result.parameters['term']
-            print("Silly pepe " + str(self.parameters))
             self.fulfillment_text = gsheets_reader.get_definition(str(self.parameters))
-
-        if (self.intent == 'STD'):
-            names = self.query_result.parameters['std_id']
-            params = []
-            for name in names:
-                params.append(name)
-            self.parameters = params
-
+        
+        # Handle case: Indentify theme
+        if (intents[1] == "theme"):
+            self.intent = intents[2]
+            self.fulfillment_text = self.query_result.fulfillment_text 
 
