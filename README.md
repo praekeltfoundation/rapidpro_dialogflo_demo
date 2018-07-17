@@ -24,8 +24,24 @@ We need access to two sets of credentials to make this application work nice and
 1) Service account file to access the Dialogflow API
 2) Service account file to access the Google Sheets / Google Drive API
 
-Firstly, we will acquire the service account file for the Dialogflow API. First, open your newly created Agent in the Dialogflow Console and take a note of the Google Project ID.
+Firstly, we will acquire the service account file for the Dialogflow API. First, open your newly created Agent in the [Dialogflow Console](https://console.dialogflow.com) and take a note of the Google Project ID. In our case, that value is `littlesisv3`.
 
+![](https://i.imgur.com/KGfPUQy.png)
+
+Then, head over to the [Google Cloud Platform Console](https://console.cloud.google.com/) and select the Google Cloud Project that corresponds to your Agent's Project ID.
+
+![](https://i.imgur.com/Ha1TIMh.png)
+
+Now, select _Credentials_ under the _APIs & Services_ tab.
+
+![](https://i.imgur.com/K3dRHbh.png)
+
+Select _Create credentials_ followed by _Service account key_.
+![](https://i.imgur.com/diEJfib.png)
+
+Select _Dialogflow Integrations_ as the service account (this is automatically created for us by Dialogflow when we create a new Agent). Leave the file format as JSON and download the file. Move this into the root directory of the repository, renamed to `dialogflow_key.json`.
+
+![](https://i.imgur.com/GYtp0YE.png)
 ## Installation
 Start by cloning the repository and installing the dependencies.
 
