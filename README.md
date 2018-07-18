@@ -18,6 +18,7 @@ The following software should be installed before attempting installation:
 * `python3`
 * `pip`
 * `pipenv` (can be installed with `sudo pip install pipenv`)
+* `ngrok` (used to make our Flask application visible to the rest of the world, including RapidPro)
 
 ### Credentials
 We need access to two sets of credentials to make this application work nice and smoothly:
@@ -73,6 +74,17 @@ $ pipenv shell
 # Run the Flask app (using the built-in development server)
 $ python response_handler.py
 ```
+
+To make this application visible to RapidPro, open up another terminal and run the following commands:
+
+```bash
+# The Flask application is listening on port 8080
+$ ngrok http 8080 
+```
+
+This will open an ngrok tunnel. Take note of the URL under _Forwarding_, in our case it is `https://62d0f4b.ngrok.io`. Take note that this URL will change each time you start create a new tunnel. This updated URL must be used in all the _Call Webhook_ events in RapidPro flows.
+
+![](https://i.imgur.com/HhX7Bd8.png)
 
 ## Docker 
 If you need to run this application inside a Docker container, a `Dockerfile` has been provided. Needless to say, Docker must be installed (more information can be found in the [documentation](/link_to_docker_install_docs))
